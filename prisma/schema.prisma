@@ -1,20 +1,105 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Autorole {
+  guild_id BigInt
+  role_id  BigInt
 
-    @@index([name])
+  @@id([guild_id, role_id])
+  @@index([guild_id])
+}
+
+model Config {
+  guild_id        BigInt               @id
+  autorole_status Boolean              @default(false)
+  autorole_mode   Config_autorole_mode @default(onJoin)
+
+  @@index([guild_id])
+}
+
+model Guild {
+  id BigInt @id
+
+  @@index([id])
+}
+
+model IgnoredRole {
+  guild_id        BigInt
+  menu_name       String
+  item_role_id    BigInt
+  ignored_role_id BigInt
+
+  @@id([guild_id, menu_name, item_role_id])
+  @@index([guild_id, menu_name, item_role_id])
+}
+
+model PublishedRolemenu {
+  guild_id   BigInt
+  name       String
+  message_id BigInt
+
+  @@id([guild_id, name, message_id])
+  @@index([guild_id, name, message_id])
+}
+
+model RequiredRole {
+  guild_id         BigInt
+  menu_name        String
+  item_role_id     BigInt
+  required_role_id BigInt
+
+  @@id([guild_id, menu_name, item_role_id])
+  @@index([guild_id, menu_name, item_role_id])
+}
+
+model Rolemenu {
+  guild_id BigInt
+  name     String
+  mode     Rolemenu_mode
+
+  @@id([guild_id, name])
+  @@index([guild_id, name])
+}
+
+model RolemenuItem {
+  guild_id           BigInt
+  menu_name          String
+  role_id            BigInt
+  label              String?
+  emoji              String?
+  button_color       Int?
+  option_description String?
+  member_limit       Int     @default(0)
+  show_total         Boolean @default(false)
+  toggleable         Boolean @default(true)
+
+  @@id([guild_id, menu_name, role_id])
+  @@index([guild_id, menu_name, role_id])
+}
+
+model RolemenuOptions {
+  guild_id           BigInt
+  menu_name          String
+  role_limit         Int     @default(1)
+  clear_roles_button Boolean @default(false)
+
+  @@id([guild_id, menu_name])
+  @@index([guild_id, menu_name])
+}
+
+enum Config_autorole_mode {
+  onJoin
+  onVerify
+}
+
+enum Rolemenu_mode {
+  reaction
+  button
+  select
 }
