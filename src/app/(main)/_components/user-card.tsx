@@ -1,6 +1,6 @@
 "use client";
 
-import { SignOutButton } from "@clerk/nextjs";
+import { useClerk } from "@clerk/nextjs";
 import { useState } from "react";
 import { ChevronsLeftRight } from "lucide-react";
 
@@ -15,9 +15,12 @@ import {
 import { useEffect } from "react";
 import axios from "axios";
 import { type MinimalDiscordUser } from "@/types/discord-user";
+import { useRouter } from "next/navigation";
 
 export const UserCard = () => {
   const [user, setUser] = useState<MinimalDiscordUser>();
+  const { signOut } = useClerk();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,7 +81,7 @@ export const UserCard = () => {
           asChild
           className="w-full cursor-pointer text-muted-foreground hover:bg-card/10"
         >
-          <SignOutButton>Log out</SignOutButton>
+          <div onClick={() => signOut(() => router.push("/"))}>Log out</div>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
