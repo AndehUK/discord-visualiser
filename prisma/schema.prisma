@@ -7,6 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  userID    String @id
+  discordID String
+}
+
 model Autorole {
   guild_id BigInt
   role_id  BigInt
